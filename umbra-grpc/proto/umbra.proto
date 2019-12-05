@@ -3,7 +3,44 @@ syntax = "proto3";
 package umbra_auth;
 
 service UmbraAuth {
+  rpc IdentityRegister(IdentityRegistrationRequest) returns (IdentityReply) {}
   rpc IsAlive(IsAliveRequest) returns (IsAliveReply) {}
+}
+
+message Error {
+  enum Kind {
+    UNKNOWN = 0;
+    UNAUTHORIZED = 1;
+  }
+  Kind kind = 1;
+  string details = 2;
+  string trace = 3;
+}
+
+message Meta {
+  string id = 1;
+  string created = 2;
+  string updated = 3;
+  string deleted = 4;
+}
+
+message Identity {
+  Meta meta = 1;
+  string foreign_id = 2;
+}
+
+message IdentityRegistrationRequest {
+  string organization_slug = 1;
+  string system_slug = 2;
+  string username = 3;
+  string password = 4;
+}
+
+message IdentityReply {
+  oneof outcome {
+    Error error = 1;
+    Identity ok = 2;
+  }
 }
 
 message IsAliveRequest {}
