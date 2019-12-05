@@ -1,0 +1,25 @@
+[package]
+name = "umbra-grpc"
+version = "0.1.0"
+authors = ["Nathan A Sculli <nathan@vegasbuckeye.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# 0.5 causes an error with tonic
+bytes = "0.4"
+dotenv = "0.15"
+log = "0.4"
+pretty_env_logger = "0.3"
+prost = "0.5"
+prost-derive = "0.5"
+scrypt = "0.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = "0.2.0-alpha.6"
+tonic = "0.1.0-alpha.6"
+umbra-model = { path = "../umbra-model" }
+
+[build-dependencies]
+tonic-build = "0.1.0-alpha.6"

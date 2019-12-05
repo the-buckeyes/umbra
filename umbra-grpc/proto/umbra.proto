@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package umbra_auth;
+
+service UmbraAuth {
+  rpc IsAlive(IsAliveRequest) returns (IsAliveReply) {}
+}
+
+message IsAliveRequest {}
+
+message IsAliveReply {
+  enum Status {
+    DEAD = 0;
+    ALIVE = 1;
+  }
+  Status status = 1;
+}
