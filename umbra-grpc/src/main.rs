@@ -1,8 +1,10 @@
 use umbra_model;
 
-mod umbra_auth;
+mod di;
+mod errors;
 mod handler;
 mod service;
+mod umbra_auth;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

@@ -3,7 +3,7 @@ syntax = "proto3";
 package umbra_auth;
 
 service UmbraAuth {
-  rpc IdentityRegister(IdentityRegistrationRequest) returns (IdentityReply) {}
+  rpc IdentityRegister(Registration) returns (IdentityReply) {}
   rpc IsAlive(IsAliveRequest) returns (IsAliveReply) {}
 }
 
@@ -29,7 +29,7 @@ message Identity {
   string foreign_id = 2;
 }
 
-message IdentityRegistrationRequest {
+message Registration {
   string organization_slug = 1;
   string system_slug = 2;
   string username = 3;
