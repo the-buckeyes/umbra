@@ -5,6 +5,7 @@ package umbra_auth;
 service UmbraAuth {
   rpc IdentityRegister(Registration) returns (IdentityReply) {}
   rpc IsAlive(IsAliveRequest) returns (IsAliveReply) {}
+  rpc SystemSearch(SystemSearchRequest) returns (SystemList) {}
 }
 
 message Error {
@@ -51,4 +52,38 @@ message IsAliveReply {
     ALIVE = 1;
   }
   Status status = 1;
+}
+
+message ListMeta {
+  int32 total = 1;
+  Page page = 2;
+}
+
+message Page {
+  int32 limit = 1;
+  int32 number = 2;
+  int32 total = 3;
+}
+
+message Organization {
+  string id = 1;
+  string slug = 2;
+  string display = 3;
+}
+
+message System {
+  string id = 1;
+  string slug = 2;
+  string display = 3;
+  repeated Organization organizations = 4;
+}
+
+message SystemSearchRequest {
+  string slug = 1;
+  Page page = 2;
+}
+
+message SystemList {
+  ListMeta meta = 1;
+  repeated System systems = 2;
 }

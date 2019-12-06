@@ -14,8 +14,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
   let addr = format!("{}:{}", host, port).parse()?;
 
   let pool = umbra_model::db::connect();
+  let mysql_pool = umbra_model::mysql::connection::connect();
   let service = service::Umbra {
       db: std::sync::Arc::new(pool),
+      mysql: std::sync::Arc::new(mysql_pool),
   };
 
   tonic::transport::Server::builder()

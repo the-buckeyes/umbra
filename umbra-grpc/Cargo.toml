@@ -17,9 +17,9 @@ prost-derive = "0.5"
 scrypt = "0.2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tokio = "0.2.0-alpha.6"
-tonic = "0.1.0-alpha.6"
+tokio = "^0.2"
+tonic = { git = "https://github.com/hyperium/tonic", branch = "master" }
 umbra-model = { path = "../umbra-model" }
 
 [build-dependencies]
-tonic-build = "0.1.0-alpha.6"
+tonic-build = { git = "https://github.com/hyperium/tonic", branch = "master" }
