@@ -95,7 +95,7 @@ impl Identity {
         use crate::crypt;
         use crate::mysql::{organization::Organization, system::System};
 
-        let sql = format!("{} WHERE username = :username", BASE_QUERY);
+        let sql = format!("{} WHERE username_hash = :username_hash", BASE_QUERY);
 
         let (db, org) = Organization::get_by_slug(db, organization)
             .await
@@ -136,7 +136,7 @@ impl Identity {
           INSERT INTO `identity`
           (username_hash, algorithm_id, salt, derived_key)
           VALUES
-          (:username, :algorithm_id, :salt, :derived_key)
+          (:username_hash, :algorithm_id, :salt, :derived_key)
         ";
         let params = params! {
             "username_hash" => username_hash,
