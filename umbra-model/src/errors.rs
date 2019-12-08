@@ -5,6 +5,7 @@ use std::fmt;
 pub enum UmbraModelError {
   CryptoError(String),
   Failure(String),
+  ValidationFailure(String),
   NotFound,
   Rollback,
 }
@@ -71,14 +72,11 @@ impl From<scrypt::errors::InvalidOutputLen> for UmbraModelError {
 impl fmt::Display for UmbraModelError {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
-      UmbraModelError::CryptoError(reason) => {
-        write!(f, "encryption failure: {}", reason)
-      }
-      UmbraModelError::Failure(error) => write!(f, "{}", error),
-      UmbraModelError::NotFound => write!(f, "Database record not found"),
-      UmbraModelError::Rollback => {
-        write!(f, "Database transaction was rolled back")
-      }
+      Self::CryptoError(reason) => write!(f, "encryption failure: {}", reason),
+      Self::Failure(error) => write!(f, "{}", error),
+      Self::ValidationFailure(message) => write!(f, "{}", message),
+      Self::NotFound => write!(f, "Database record not found"),
+      Self::Rollback => write!(f, "Database transaction was rolled back"),
     }
   }
 }

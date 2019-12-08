@@ -2,15 +2,15 @@ pub mod hash {
   use crate::errors::UmbraModelError;
 
   pub fn foreign_id(
-    system_id: &str,
-    organization_id: &str,
+    system_key: &str,
+    organization_key: &str,
     foreign_id: &str,
   ) -> String {
     use sha2::{Digest, Sha256};
 
     let mut hasher = Sha256::new();
-    hasher.input(system_id);
-    hasher.input(organization_id);
+    hasher.input(system_key);
+    hasher.input(organization_key);
     hasher.input(foreign_id);
 
     format!("{:x}", hasher.result())

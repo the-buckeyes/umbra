@@ -124,14 +124,14 @@ table! {
 }
 
 allow_tables_to_appear_in_same_query!(
-    algorithm,
-    credential,
-    organization,
-    role,
-    role_scope,
-    scope,
-    system,
-    token,
-    token_data,
-    token_kind,
+  algorithm,
+  credential,
+  organization,
+  role,
+  role_scope,
+  scope,
+  system,
+  token,
+  token_data,
+  token_kind,
 );
