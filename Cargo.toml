@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+  "umbra-model",
+  "umbra-grpc"
+]
