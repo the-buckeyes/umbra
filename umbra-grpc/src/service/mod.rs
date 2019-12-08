@@ -1,10 +1,6 @@
 use crate::umbra_auth::server::UmbraAuth;
 
-use crate::handler::{
-    is_alive,
-    registration,
-    system,
-};
+use crate::handler::{is_alive, registration, system};
 
 pub struct Umbra {
     pub db: crate::di::DBContainer,
@@ -18,12 +14,9 @@ impl UmbraAuth for Umbra {
     }
 
     async fn identity_register(&self, request: registration::Request) -> registration::Reply {
-        use crate::umbra_auth::{
-            identity_reply::Outcome,
-            IdentityReply,
-        };
+        use crate::umbra_auth::{identity_reply::Outcome, IdentityReply};
 
-        let identity = registration::register(self.db.clone(), &request.into_inner())?;
+        let identity = registration::register(self.mysql.clone(), &request.into_inner()).await?;
 
         let reply = IdentityReply {
             outcome: Some(Outcome::Ok(identity)),
@@ -33,7 +26,6 @@ impl UmbraAuth for Umbra {
     }
 
     async fn system_search(&self, request: system::SearchRequest) -> system::SearchReply {
-
         let request = request.into_inner();
 
         let (limit, offset) = request.page.map_or((100, 0), |page| {
@@ -44,8 +36,7 @@ impl UmbraAuth for Umbra {
         });
         let slug = &request.slug;
 
-        let reply =
-            system::search(self.mysql.clone(), limit, offset, slug).await?;
+        let reply = system::search(self.mysql.clone(), limit, offset, slug).await?;
 
         Ok(tonic::Response::new(reply))
     }

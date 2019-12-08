@@ -27,7 +27,7 @@ message Meta {
 
 message Identity {
   Meta meta = 1;
-  string foreign_id = 2;
+  string username_hash = 2;
 }
 
 message Registration {
