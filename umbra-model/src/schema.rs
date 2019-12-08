@@ -10,9 +10,9 @@ table! {
 }
 
 table! {
-    credential (id) {
+    identity (id) {
         id -> Unsigned<Bigint>,
-        foreign_id -> Varchar,
+        username_hash -> Varchar,
         algorithm_id -> Unsigned<Integer>,
         salt -> Nullable<Varchar>,
         derived_key -> Nullable<Varchar>,
@@ -124,14 +124,14 @@ table! {
 }
 
 allow_tables_to_appear_in_same_query!(
-  algorithm,
-  credential,
-  organization,
-  role,
-  role_scope,
-  scope,
-  system,
-  token,
-  token_data,
-  token_kind,
+    algorithm,
+    identity,
+    organization,
+    role,
+    role_scope,
+    scope,
+    system,
+    token,
+    token_data,
+    token_kind,
 );

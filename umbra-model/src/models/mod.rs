@@ -1,5 +1,5 @@
 pub mod algorithm;
-pub mod credential;
+pub mod identity;
 pub mod organization;
 pub mod role;
 pub mod role_scope;

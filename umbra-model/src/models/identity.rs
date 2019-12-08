@@ -4,20 +4,20 @@ use diesel::{ExpressionMethods, MysqlConnection, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::errors::UmbraModelError;
-use crate::schema::credential;
+use crate::schema::identity;
 
 #[derive(Deserialize)]
 pub struct Registration {
   pub system: String,
   pub organization: String,
-  pub foreign_id: String,
+  pub username: String,
   pub password: String,
 }
 
 #[derive(Queryable, Serialize, Deserialize)]
-pub struct Credential {
+pub struct Identity {
   pub id: u64,
-  pub foreign_id: String,
+  pub username_hash: String,
   pub algorithm_id: u32,
   pub salt: Option<String>,
   pub derived_key: Option<String>,
@@ -26,23 +26,23 @@ pub struct Credential {
   pub deleted: i64,
 }
 
-pub type CredentialColumns = (
-  credential::id,
-  credential::foreign_id,
-  credential::algorithm_id,
-  credential::created,
-  credential::updated,
+pub type IdentityColumns = (
+  identity::id,
+  identity::username_hash,
+  identity::algorithm_id,
+  identity::created,
+  identity::updated,
 );
 
-pub const ALGORITHM_COLUMNS: CredentialColumns = (
-  credential::id,
-  credential::foreign_id,
-  credential::algorithm_id,
-  credential::created,
-  credential::updated,
+pub const ALGORITHM_COLUMNS: IdentityColumns = (
+  identity::id,
+  identity::username_hash,
+  identity::algorithm_id,
+  identity::created,
+  identity::updated,
 );
 
-impl Credential {
+impl Identity {
   pub fn new(
     db: &MysqlConnection,
     registration: Registration,
@@ -50,7 +50,7 @@ impl Credential {
     use crate::models::{
       algorithm::Algorithm, organization::Organization, system::System,
     };
-    use crate::schema::credential::dsl::*;
+    use crate::schema::identity::dsl::*;
     use diesel::insert_into;
 
     let key = crate::crypt::hash::password(&registration.password)?;
@@ -60,29 +60,29 @@ impl Credential {
       Organization::get_by_slug(db, &registration.organization)?;
     let system = System::get_by_slug(db, &registration.system)?;
 
-    let foreign_id_key = crate::crypt::hash::foreign_id(
+    let username_hash_key = crate::crypt::hash::username(
       &system.id.to_string(),
       &organization.id.to_string(),
-      &registration.foreign_id,
+      &registration.username,
     );
 
     let user = db.transaction(|| {
-      insert_into(credential)
+      insert_into(identity)
         .values((
           algorithm_id.eq(algorithm.id),
-          foreign_id.eq(foreign_id_key),
+          username_hash.eq(username_hash_key),
           derived_key.eq(key),
         ))
         .execute(db)?;
 
-      credential.order(id.desc()).first(db)
+      identity.order(id.desc()).first(db)
     })?;
 
     Ok(user)
   }
 
   pub fn list(db: &MysqlConnection) -> Result<Vec<Self>, UmbraModelError> {
-    use crate::schema::credential::dsl::*;
-    Ok(credential.load::<Credential>(db)?)
+    use crate::schema::identity::dsl::*;
+    Ok(identity.load::<Identity>(db)?)
   }
 }

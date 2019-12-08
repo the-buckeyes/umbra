@@ -1,5 +1,5 @@
 use super::{
-  algorithm::Algorithm, credential::Credential, organization::Organization,
+  algorithm::Algorithm, identity::Identity, organization::Organization,
   reply::Reply, system::System,
 };
 use crate::errors::UmbraModelError;
@@ -9,7 +9,7 @@ use mysql_async::Conn as MySql;
 pub struct Registration<'a> {
   pub system: &'a str,
   pub organization: &'a str,
-  pub foreign_id: &'a str,
+  pub username: &'a str,
   pub password: &'a str,
 }
 
@@ -20,8 +20,8 @@ fn invalid(field_list: &str) -> Result<String, UmbraModelError> {
   Err(error)
 }
 
-fn get_foreign_id_hash(
-  foreign_id: &str,
+fn get_username_hash(
+  username: &str,
   algorithm: Option<Algorithm>,
   organization: Option<Organization>,
   system: Option<System>,
@@ -38,18 +38,18 @@ fn get_foreign_id_hash(
     (None, Some(_), Some(_)) => return invalid("algorithm"),
   };
 
-  Ok(crate::crypt::hash::foreign_id(
+  Ok(crate::crypt::hash::username(
     &system_key,
     &organizion_key,
-    foreign_id,
+    username,
   ))
 }
 
 impl<'a> Registration<'a> {
-  pub async fn into_credential(
+  pub async fn into_identity(
     db: MySql,
     r: &Registration<'a>,
-  ) -> Reply<Option<Credential>> {
+  ) -> Reply<Option<Identity>> {
     let (db, algo) = Algorithm::get_by_slug(db, "BCRYPT")
       .await
       .map_err(|e| UmbraModelError::from(e))
@@ -71,10 +71,10 @@ impl<'a> Registration<'a> {
     let derived_key = crate::crypt::hash::password(r.password)?;
     let algorithm_id = algo.id.clone();
 
-    let foreign_id_hash =
-      get_foreign_id_hash(r.foreign_id, Some(algo), org, sys)?;
+    let username_hash =
+      get_username_hash(r.username, Some(algo), org, sys)?;
 
-    Credential::insert(db, &foreign_id_hash, algorithm_id, None, &derived_key)
+    Identity::insert(db, &username_hash, algorithm_id, None, &derived_key)
       .await
   }
 }
