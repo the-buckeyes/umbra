@@ -1,0 +1,11 @@
+[package]
+name = "umbra-mysql"
+version = "0.1.0"
+authors = ["Nathan A Sculli <nathan@vegasbuckeye.com>"]
+edition = "2018"
+
+[dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+mysql_async = "0.21.1"
+quaint = { version = "0.1.7", features = [ "full-mysql" ] }
+serde = { version = "1.0", features = [ "derive" ] }
